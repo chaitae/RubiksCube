@@ -22,9 +22,6 @@ public class UserInput : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 100f, mask))
             {
-                Debug.Log("You selected the " + hit.transform.name); // ensure you picked right object
-                //lastClickedBlock = hit.transform.gameObject;
-                //if topFace
                 if(hit.transform.name.Contains("Top"))
                 {
                     RubikController.instance.RotateFace(FaceType.Top);
@@ -44,6 +41,10 @@ public class UserInput : MonoBehaviour
                 else if(hit.transform.name.Contains("Bottom"))
                 {
                     RubikController.instance.RotateFace(FaceType.Bottom);
+                }
+                else if (hit.transform.name.Contains("Back"))
+                {
+                    RubikController.instance.RotateFace(FaceType.Back);
                 }
             }
         }

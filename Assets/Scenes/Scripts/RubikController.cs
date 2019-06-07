@@ -100,28 +100,31 @@ public class RubikController : MonoBehaviour
     }
     public void RotateFace(FaceType face)
     {
-        switch(face)
+        if(canRotate)
         {
-            case FaceType.Front:
-                StartCoroutine(RotateFaceHelper(rubikModel.front.ToArray(), new Vector3(0, 0, 1)));
-                break;
-            case FaceType.Back:
-                StartCoroutine(RotateFaceHelper(rubikModel.back.ToArray(), new Vector3(0, 0, 1)));
-                break;
-            case FaceType.Bottom:
-                StartCoroutine(RotateFaceHelper(rubikModel.bottom.ToArray(), Orbit.horizontalCLockwise)); //top
-                break;
-            case FaceType.Left:
-                StartCoroutine(RotateFaceHelper(rubikModel.left.ToArray(), Orbit.verticleClockwise));
-                break;
-            case FaceType.Right:
-                StartCoroutine(RotateFaceHelper(rubikModel.right.ToArray(), Orbit.verticleClockwise));
-                break;
-            default:
-                StartCoroutine(RotateFaceHelper(rubikModel.top.ToArray(), Orbit.horizontalCLockwise)); //top
-                break;
-            
+            switch (face)
+            {
+                case FaceType.Front:
+                    StartCoroutine(RotateFaceHelper(rubikModel.front.ToArray(), new Vector3(0, 0, 1)));
+                    break;
+                case FaceType.Back:
+                    StartCoroutine(RotateFaceHelper(rubikModel.back.ToArray(), new Vector3(0, 0, 1)));
+                    break;
+                case FaceType.Bottom:
+                    StartCoroutine(RotateFaceHelper(rubikModel.bottom.ToArray(), Orbit.horizontalCLockwise)); //top
+                    break;
+                case FaceType.Left:
+                    StartCoroutine(RotateFaceHelper(rubikModel.left.ToArray(), Orbit.verticleClockwise));
+                    break;
+                case FaceType.Right:
+                    StartCoroutine(RotateFaceHelper(rubikModel.right.ToArray(), Orbit.verticleClockwise));
+                    break;
+                default:
+                    StartCoroutine(RotateFaceHelper(rubikModel.top.ToArray(), Orbit.horizontalCLockwise)); //top
+                    break;
+            }
         }
+
     }
     IEnumerator RotateFaceHelper(GameObject[] face, Vector3 direction)
     {
@@ -151,36 +154,5 @@ public class RubikController : MonoBehaviour
 
         }
     }
-    void Update()
-    {
-     
-        if(Input.GetKey(KeyCode.A))
-        {
-            IncrementRotate(rubikModel.front.ToArray(),new Vector3(0, 0, 1));
 
-        }
-        if (Input.GetMouseButtonDown(1) && canRotate)
-        {
-            StartCoroutine(RotateFaceHelper(rubikModel.top.ToArray(), Orbit.horizontalCLockwise));
-        }
-        if(Input.GetMouseButton(2) && canRotate)
-        {
-            StartCoroutine(RotateFaceHelper(rubikModel.left.ToArray(), Orbit.verticleClockwise));
-        }
-        if(Input.GetKeyDown(KeyCode.Alpha1) && canRotate)
-        {
-            StartCoroutine(RotateFaceHelper(rubikModel.right.ToArray(), Orbit.verticleClockwise));
-
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2) && canRotate)
-        {
-            StartCoroutine(RotateFaceHelper(rubikModel.bottom.ToArray(), Orbit.horizontalCLockwise));
-
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3) && canRotate)
-        {
-            StartCoroutine(RotateFaceHelper(rubikModel.back.ToArray(), new Vector3(0,0,1)));
-
-        }
-    }
 }
