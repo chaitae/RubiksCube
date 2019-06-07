@@ -53,6 +53,5 @@ public class UserInput : MonoBehaviour
     void Update()
     {
         RotateOnClick();
-
     }
 }

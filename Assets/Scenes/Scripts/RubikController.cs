@@ -7,6 +7,7 @@ public class RubikController : MonoBehaviour
     public static RubikController instance = null;
     public RubikModel rubikModel;
     bool canRotate = true;
+    bool scrambled = false;
     public float offset = 5f;
     Vector3 initial = new Vector3();
     private void Awake()
@@ -19,6 +20,7 @@ public class RubikController : MonoBehaviour
         {
             Destroy(this);
         }
+        StartCoroutine(ScrambleCube());
     }
     public void UpdateBlockFaces(FaceType face,bool isRemoving,GameObject go)
     {
@@ -126,6 +128,17 @@ public class RubikController : MonoBehaviour
         }
 
     }
+    IEnumerator ScrambleCube()
+    {
+        for(int i =0; i<2;i++)
+        {
+            int numbSides = 6;
+            int ranIndex = Random.Range(0, numbSides);
+            RotateFace((FaceType)ranIndex);
+            yield return new WaitForSeconds(1);
+        }
+        scrambled = true;
+    }
     IEnumerator RotateFaceHelper(GameObject[] face, Vector3 direction)
     {
         canRotate = false;
@@ -142,17 +155,27 @@ public class RubikController : MonoBehaviour
 
             yield return null; //until next frame
         }
+        if(scrambled)
+        {
+            if(CheckSolved())
+            {
+                Debug.Log("puzzle solved");
+                GameManager.instance.Win();
+            }
+        }
         canRotate = true;
     }
-    void IncrementRotate(GameObject[] face, Vector3 direction)
+    bool CheckSolved()
     {
-        GameObject pivot = GetPivot(face);
-
-        foreach (GameObject go in face)
+        foreach(GameObject child in rubikModel.allPieces)
         {
-            go.transform.RotateAround(pivot.transform.position, direction, 5f);
-
+            if(Mathf.Round(child.transform.localRotation.eulerAngles.x) != 0 || Mathf.Round(child.transform.localRotation.eulerAngles.z) != 0 || Mathf.Round(child.transform.localRotation.eulerAngles.y) != 0)
+            {
+                Debug.Log("x: "+child.transform.localRotation.x + " y: "+ child.transform.localRotation.y+ " z: "+ child.transform.localRotation.z);
+                return false;
+            }
         }
+        return true;
     }
 
 }
