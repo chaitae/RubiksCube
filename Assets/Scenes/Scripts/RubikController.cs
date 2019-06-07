@@ -6,10 +6,9 @@ public class RubikController : MonoBehaviour
 {
     public static RubikController instance = null;
     public RubikModel rubikModel;
-    public RubikView rubikView;
     bool canRotate = true;
     public float offset = 5f;
-
+    Vector3 initial = new Vector3();
     private void Awake()
     {
         if(instance == null)
@@ -77,8 +76,6 @@ public class RubikController : MonoBehaviour
                 }
                 break;
             default:
-                Debug.Log("top");
-
                 if (isRemoving)
                 {
                     rubikModel.top.Remove(go);
@@ -101,7 +98,32 @@ public class RubikController : MonoBehaviour
         }
         return null;
     }
-    IEnumerator RotateFace(GameObject[] face, Vector3 direction)
+    public void RotateFace(FaceType face)
+    {
+        switch(face)
+        {
+            case FaceType.Front:
+                StartCoroutine(RotateFaceHelper(rubikModel.front.ToArray(), new Vector3(0, 0, 1)));
+                break;
+            case FaceType.Back:
+                StartCoroutine(RotateFaceHelper(rubikModel.back.ToArray(), new Vector3(0, 0, 1)));
+                break;
+            case FaceType.Bottom:
+                StartCoroutine(RotateFaceHelper(rubikModel.bottom.ToArray(), Orbit.horizontalCLockwise)); //top
+                break;
+            case FaceType.Left:
+                StartCoroutine(RotateFaceHelper(rubikModel.left.ToArray(), Orbit.verticleClockwise));
+                break;
+            case FaceType.Right:
+                StartCoroutine(RotateFaceHelper(rubikModel.right.ToArray(), Orbit.verticleClockwise));
+                break;
+            default:
+                StartCoroutine(RotateFaceHelper(rubikModel.top.ToArray(), Orbit.horizontalCLockwise)); //top
+                break;
+            
+        }
+    }
+    IEnumerator RotateFaceHelper(GameObject[] face, Vector3 direction)
     {
         canRotate = false;
         float angle = 0;
@@ -119,34 +141,45 @@ public class RubikController : MonoBehaviour
         }
         canRotate = true;
     }
+    void IncrementRotate(GameObject[] face, Vector3 direction)
+    {
+        GameObject pivot = GetPivot(face);
+
+        foreach (GameObject go in face)
+        {
+            go.transform.RotateAround(pivot.transform.position, direction, 5f);
+
+        }
+    }
     void Update()
     {
-        //if(Input.GetMouseButtonDown(0) && canRotate)
-        //{
+     
+        if(Input.GetKey(KeyCode.A))
+        {
+            IncrementRotate(rubikModel.front.ToArray(),new Vector3(0, 0, 1));
 
-        //    StartCoroutine(RotateFace(rubikModel.front.ToArray(),new Vector3(0,0,1)));
-        //}
+        }
         if (Input.GetMouseButtonDown(1) && canRotate)
         {
-            StartCoroutine(RotateFace(rubikModel.top.ToArray(), Orbit.horizontalCLockwise));
+            StartCoroutine(RotateFaceHelper(rubikModel.top.ToArray(), Orbit.horizontalCLockwise));
         }
         if(Input.GetMouseButton(2) && canRotate)
         {
-            StartCoroutine(RotateFace(rubikModel.left.ToArray(), Orbit.verticleClockwise));
+            StartCoroutine(RotateFaceHelper(rubikModel.left.ToArray(), Orbit.verticleClockwise));
         }
         if(Input.GetKeyDown(KeyCode.Alpha1) && canRotate)
         {
-            StartCoroutine(RotateFace(rubikModel.right.ToArray(), Orbit.verticleClockwise));
+            StartCoroutine(RotateFaceHelper(rubikModel.right.ToArray(), Orbit.verticleClockwise));
 
         }
         if (Input.GetKeyDown(KeyCode.Alpha2) && canRotate)
         {
-            StartCoroutine(RotateFace(rubikModel.bottom.ToArray(), Orbit.horizontalCLockwise));
+            StartCoroutine(RotateFaceHelper(rubikModel.bottom.ToArray(), Orbit.horizontalCLockwise));
 
         }
         if (Input.GetKeyDown(KeyCode.Alpha3) && canRotate)
         {
-            StartCoroutine(RotateFace(rubikModel.back.ToArray(), new Vector3(0,0,1)));
+            StartCoroutine(RotateFaceHelper(rubikModel.back.ToArray(), new Vector3(0,0,1)));
 
         }
     }
