@@ -1,18 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum SwipeType
-{
-    left, right, up, down
-}
+
 public class UserInput : MonoBehaviour
 {
-    Vector3 initial;
-    Vector3 end;
+
     public LayerMask mask;
-    public float minimumDistance;
-    GameObject lastClickedBlock;
     bool isRightClick;
+    bool isScrambled = false;
     void RotateOnClick()
     {
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
@@ -59,6 +55,28 @@ public class UserInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(isScrambled)
         RotateOnClick();
+    }
+    private void SetScrambledFalse()
+    {
+        isScrambled = false;
+    }
+    private void SetScrambledTrue()
+    {
+        isScrambled = true;
+    }
+
+    void OnEnable()
+    {
+        RubikController.OnScrambled += SetScrambledTrue;
+        GameManager.OnReset += SetScrambledFalse;
+        
+    }
+
+    void OnDisable()
+    {
+        RubikController.OnScrambled -= SetScrambledTrue;
+        GameManager.OnReset -= SetScrambledFalse;
     }
 }

@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
 {
     public Text timerText;
     public GameObject winScreen;
+    public GameObject loseScreen;
     public Text winText;
     void UpdateTimer()
     {
@@ -16,14 +17,19 @@ public class UIManager : MonoBehaviour
     void OnDisable()
     {
         GameManager.OnWon -= ShowWinScreen;
+        GameManager.OnLose -= ShowLoseScreen;
+    }
 
-        //Debug.Log("PrintOnDisable: script was disabled");
+    private void ShowLoseScreen()
+    {
+        loseScreen.SetActive(true);
     }
 
     void OnEnable()
     {
         GameManager.OnWon += ShowWinScreen;
-        //Debug.Log("PrintOnEnable: script was enabled");
+        GameManager.OnLose += ShowLoseScreen;
+
     }
 
     private void ShowWinScreen()
@@ -41,6 +47,6 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timerText.text = (int)GameManager.instance.timeElapsed + "";
+        timerText.text = (int)GameManager.instance.GetCurrTime() + "";
     }
 }

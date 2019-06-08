@@ -5,6 +5,8 @@ using UnityEngine;
 public class RubikController : MonoBehaviour
 {
     public static RubikController instance = null;
+    public delegate void GeneralMethod();
+    public static event GeneralMethod OnScrambled;
     public RubikModel rubikModel;
     bool canRotate = true;
     bool scrambled = false;
@@ -21,6 +23,7 @@ public class RubikController : MonoBehaviour
 
     private void Scramble()
     {
+        scrambled = false;
         StartCoroutine(ScrambleCube());
     }
     private void Awake()
@@ -148,12 +151,16 @@ public class RubikController : MonoBehaviour
     }
     IEnumerator ScrambleCube()
     {
-        for(int i =0; i<2;i++)
+        for(int i =0; i<20;i++)
         {
             int numbSides = 6;
             int ranIndex = Random.Range(0, numbSides);
             RotateFace((FaceType)ranIndex,true);
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(.5f);
+        }
+        if(OnScrambled != null)
+        {
+            OnScrambled();
         }
         scrambled = true;
     }
