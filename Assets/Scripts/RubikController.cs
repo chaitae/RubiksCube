@@ -10,6 +10,19 @@ public class RubikController : MonoBehaviour
     bool scrambled = false;
     public float offset = 5f;
     Vector3 initial = new Vector3();
+    void OnEnable()
+    {
+        GameManager.OnReset += Scramble;
+    }
+    void OnDisable()
+    {
+        GameManager.OnReset -= Scramble;
+    }
+
+    private void Scramble()
+    {
+        StartCoroutine(ScrambleCube());
+    }
     private void Awake()
     {
         if(instance == null)
@@ -149,7 +162,6 @@ public class RubikController : MonoBehaviour
             foreach(GameObject go in face)
             {
                 go.transform.RotateAround(pivot.transform.position, direction, 5f);
-                
             }
             angle = 5f + angle;
 
@@ -171,7 +183,6 @@ public class RubikController : MonoBehaviour
         {
             if(Mathf.Round(child.transform.localRotation.eulerAngles.x) != 0 || Mathf.Round(child.transform.localRotation.eulerAngles.z) != 0 || Mathf.Round(child.transform.localRotation.eulerAngles.y) != 0)
             {
-                Debug.Log("x: "+child.transform.localRotation.x + " y: "+ child.transform.localRotation.y+ " z: "+ child.transform.localRotation.z);
                 return false;
             }
         }

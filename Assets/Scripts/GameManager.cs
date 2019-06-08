@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
     public delegate void GeneralMethod();
     public static event GeneralMethod OnWon;
     public static event GeneralMethod OnReset;
-    float timeElapsed = 0;
-    bool isPaused = false;
+    public float timeElapsed = 0;
+    public bool isPaused = false;
     void Awake()
     {
         if(instance == null)
@@ -36,13 +36,17 @@ public class GameManager : MonoBehaviour
         {
             OnReset();
         }
+
+    }
+    public void StartGame()
+    {
+
     }
     public void Update()
     {
         if(!isPaused)
         {
             timeElapsed += Time.deltaTime;
-            Debug.Log(timeElapsed);
         }
     }
 

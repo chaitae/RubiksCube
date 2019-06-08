@@ -12,8 +12,6 @@ public class UserInput : MonoBehaviour
     public LayerMask mask;
     public float minimumDistance;
     GameObject lastClickedBlock;
-    // Start is called before the first frame update
-    
     void RotateOnClick()
     {
         if (Input.GetMouseButtonDown(0))
