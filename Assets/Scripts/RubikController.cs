@@ -113,29 +113,34 @@ public class RubikController : MonoBehaviour
         }
         return null;
     }
-    public void RotateFace(FaceType face)
+    public void RotateFace(FaceType face,bool clockWise)
     {
+        int flipNumber = -1;
+        if(clockWise)
+        {
+            flipNumber = 1;
+        }
         if(canRotate)
         {
             switch (face)
             {
                 case FaceType.Front:
-                    StartCoroutine(RotateFaceHelper(rubikModel.front.ToArray(), new Vector3(0, 0, 1)));
+                    StartCoroutine(RotateFaceHelper(rubikModel.front.ToArray(), new Vector3(0, 0, -1)*flipNumber));
                     break;
                 case FaceType.Back:
-                    StartCoroutine(RotateFaceHelper(rubikModel.back.ToArray(), new Vector3(0, 0, 1)));
+                    StartCoroutine(RotateFaceHelper(rubikModel.back.ToArray(), new Vector3(0, 0, 1)*flipNumber));
                     break;
                 case FaceType.Bottom:
-                    StartCoroutine(RotateFaceHelper(rubikModel.bottom.ToArray(), Orbit.horizontalCLockwise)); //top
+                    StartCoroutine(RotateFaceHelper(rubikModel.bottom.ToArray(), -1*Orbit.horizontalCLockwise*flipNumber));
                     break;
                 case FaceType.Left:
-                    StartCoroutine(RotateFaceHelper(rubikModel.left.ToArray(), Orbit.verticleClockwise));
+                    StartCoroutine(RotateFaceHelper(rubikModel.left.ToArray(), Orbit.verticleClockwise*flipNumber));
                     break;
                 case FaceType.Right:
-                    StartCoroutine(RotateFaceHelper(rubikModel.right.ToArray(), Orbit.verticleClockwise));
+                    StartCoroutine(RotateFaceHelper(rubikModel.right.ToArray(), -1*Orbit.verticleClockwise*flipNumber));
                     break;
                 default:
-                    StartCoroutine(RotateFaceHelper(rubikModel.top.ToArray(), Orbit.horizontalCLockwise)); //top
+                    StartCoroutine(RotateFaceHelper(rubikModel.top.ToArray(), Orbit.horizontalCLockwise*flipNumber)); //top
                     break;
             }
         }
@@ -147,7 +152,7 @@ public class RubikController : MonoBehaviour
         {
             int numbSides = 6;
             int ranIndex = Random.Range(0, numbSides);
-            RotateFace((FaceType)ranIndex);
+            RotateFace((FaceType)ranIndex,true);
             yield return new WaitForSeconds(1);
         }
         scrambled = true;
