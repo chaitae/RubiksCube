@@ -9,6 +9,11 @@ public class UserInput : MonoBehaviour
     public LayerMask mask;
     bool isRightClick;
     bool isScrambled = false;
+    Vector2 input;
+    public GameObject target;
+    public float speed = 8f;
+    public float distance =10f;
+
     void RotateOnClick()
     {
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
@@ -55,6 +60,13 @@ public class UserInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetAxis("Horizontal") >0 ||Input.GetAxis("Horizontal")<0 ||Input.GetAxis("Vertical")>0 ||Input.GetAxis("Vertical")<0)
+        {
+            input += new Vector2(Input.GetAxis("Horizontal") * speed, Input.GetAxis("Vertical") * speed);
+            transform.localRotation = Quaternion.Euler(input.y, input.x, 0);
+            transform.localPosition = target.transform.position - (transform.localRotation * Vector3.forward * distance);
+        }
+
         if(isScrambled)
         RotateOnClick();
     }
